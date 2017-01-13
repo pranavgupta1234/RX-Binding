@@ -93,11 +93,18 @@ public class MainActivity extends AppCompatActivity {
         *  from RxHelper class to a Boolean (autocomplete of Func1 showed me this) as finally our observable has to emit an Boolean
         */
 
+        /*
+        * Important Note : .textChanges returns an observable to CharSequence so if from below code
+         * we remove the map function and then see then it shows error because we have defined our observable
+         * as observable ob boolean but textChanges return an observable on CharSequence so it is necessary to map
+         * the items of observable to boolean using Func1
+         * */
         Observable<Boolean> email_change_observable = RxTextView.textChanges(email)
                 .debounce(500,TimeUnit.MILLISECONDS)
          //       .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .map(new Func1<CharSequence, Boolean>() {
+                .map(new Func1<CharSequence, Boolean>() {  //CharSequence as first parameter is indicator of what we got from
+                // textChanges and Boolean is the value to which this function maps
                     @Override
                     public Boolean call(CharSequence charSequence) {
                         if(charSequence.toString().contains("@.")){
